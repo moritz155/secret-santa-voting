@@ -9,7 +9,7 @@ def seed():
             return
 
         names = [
-            "Alice Johnson",
+            "Alice lklk",
             "Bob Smith",
             "Charlie Brown",
             "Diana Prince",
