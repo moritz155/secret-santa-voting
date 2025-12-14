@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Admin - Reverse Votes{% endblock %}
+
+{% block header %}Admin Section{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Reset Voting Data</h2>
+    <p>Clicking the button below will delete all cast votes. This action cannot be undone.</p>
+
+    <form action="{{ url_for('admin_reset') }}" method="POST">
+        <button type="submit" class="btn btn-delete"
+            onclick="return confirm('Are you sure you want to delete all votes?');">Reverse Votes</button>
+    </form>
+</div>
+{% endblock %}

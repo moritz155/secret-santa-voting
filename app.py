@@ -102,6 +102,21 @@ def results():
 
     return render_template('results.html', results=results_data)
 
+@app.route('/admin')
+def admin():
+    return render_template('admin.html')
+
+@app.route('/admin/reset', methods=['POST'])
+def admin_reset():
+    try:
+        db.session.query(Vote).delete()
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        return f"An error occurred: {e}", 500
+    
+    return redirect(url_for('index'))
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
