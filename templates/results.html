@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block header %}Live Results{% endblock %}
+
+{% block content %}
+<div class="card">
+    <table class="results-table">
+        <tbody>
+            {% for row in results %}
+            <tr class="results-row">
+                <td class="rank">#{{ loop.index }}</td>
+                <td class="results-info">
+                    <div class="results-name">{{ row.name }}</div>
+                    <div class="results-stats">{{ row.count }} votes • Average: {{ row.average }}</div>
+                </td>
+                <td class="results-score">{{ row.total }} pts</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

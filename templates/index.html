@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block header %}Vote for Candidates{% endblock %}
+
+{% block content %}
+<div class="grid">
+    {% for candidate in candidates %}
+    <div class="card" id="card-{{ candidate.id }}">
+        <div class="candidate-name">{{ candidate.name }}</div>
+
+        <div class="vote-controls">
+            <!-- Check if user has already voted -->
+            {% if candidate.id in user_votes %}
+            <div class="score-display">You voted: {{ user_votes[candidate.id] }}</div>
+            <button class="vote-btn" disabled>Voted</button>
+            {% else %}
+            <div class="rating-input">
+                <input type="range" id="range-{{ candidate.id }}" min="1" max="5" value="5"
+                    oninput="updateScore({{ candidate.id }})">
+                <span id="score-{{ candidate.id }}" class="score-display">5</span>
+            </div>
+            <button onclick="submitVote({{ candidate.id }})" class="vote-btn">Vote</button>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function updateScore(id) {
+        const val = document.getElementById(`range-${id}`).value;
+        document.getElementById(`score-${id}`).textContent = val;
+    }
+
+    async function submitVote(candidateId) {
+        const score = document.getElementById(`range-${candidateId}`).value;
+
+        try {
+            const response = await fetch('/vote', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ candidate_id: candidateId, score: score })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                showToast('Vote submitted successfully!');
+                // Update UI to show "Voted" state without reload
+                const card = document.getElementById(`card-${candidateId}`);
+                const controls = card.querySelector('.vote-controls');
+                controls.innerHTML = `
+                    <div class="score-display">You voted: ${score}</div>
+                    <button class="vote-btn" disabled>Voted</button>
+                `;
+            } else {
+                showToast(data.error || 'Something went wrong', true);
+            }
+        } catch (e) {
+            showToast('Network error', true);
+            console.error(e);
+        }
+    }
+</script>
+{% endblock %}
